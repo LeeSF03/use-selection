@@ -11,7 +11,19 @@ from the parent list.
 ## Installation
 
 ```bash
+npm install use-selection
+```
+
+```bash
+yarn add use-selection
+```
+
+```bash
 pnpm add use-selection
+```
+
+```bash
+bun add use-selection
 ```
 
 React is a peer dependency.
