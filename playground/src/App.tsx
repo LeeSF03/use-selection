@@ -113,7 +113,7 @@ export function App() {
 
       <section className="comparison-grid">
         <ReactStateList />
-        <KeyedSelectorList />
+        <SelectionStoreList />
       </section>
     </main>
   );
@@ -140,7 +140,7 @@ function ReactStateList() {
   );
 }
 
-function KeyedSelectorList() {
+function SelectionStoreList() {
   const store = useMemo(
     () => createSelectionStore(KEYED_STORE_ITEMS[0]!.id),
     [],
@@ -154,7 +154,7 @@ function KeyedSelectorList() {
           {(selectedKey) => selectedKey ?? "None"}
         </SelectedKey>
       }
-      title="useSelectionStore"
+      title="useIsSelectedKey and useSelectedKey"
     >
       {KEYED_STORE_ITEMS.map((item) => (
         <StoreRow

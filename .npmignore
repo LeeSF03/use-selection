@@ -1,0 +1,22 @@
+# Version control
+.git
+.gitignore
+
+# Dependency directories
+node_modules
+
+# Build / dev folders
+playground
+tests
+
+# Tooling configs
+eslint.config.js
+tsdown.config.ts
+vite.config.ts
+tsconfig.json
+.prettierignore
+.prettierrc
+.ignore
+
+# Package manager files
+bun.lock
