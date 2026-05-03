@@ -1,5 +1,5 @@
 {
-  "name": "use-selection",
+  "name": "@leesf03/use-selection",
   "type": "module",
   "version": "0.1.0",
   "description": "createSelector from SolidJS but in React",
