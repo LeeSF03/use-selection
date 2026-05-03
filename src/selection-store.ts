@@ -1,31 +1,25 @@
 export function createSelectionStore<T>(initialKey: T | null = null) {
   let selectedKey: T | null = initialKey;
   const listeners = new Map<T, Set<() => void>>();
+  const selectedKeyListeners = new Set<() => void>();
 
   function notify(key: T) {
     listeners.get(key)?.forEach((listener) => listener());
   }
 
+  function notifySelectedKey() {
+    selectedKeyListeners.forEach((listener) => listener());
+  }
+
   return {
     subscribeSelectedKey(listener: () => void) {
-      if (selectedKey === null) return () => {};
-      let set = listeners.get(selectedKey);
-
-      if (!set) {
-        set = new Set();
-        listeners.set(selectedKey, set);
-      }
-
-      set.add(listener);
+      selectedKeyListeners.add(listener);
 
       return () => {
-        set.delete(listener);
-
-        if (set.size === 0) {
-          if (selectedKey) listeners.delete(selectedKey);
-        }
+        selectedKeyListeners.delete(listener);
       };
     },
+
     getSelectedKeySnapshot() {
       return selectedKey;
     },
@@ -38,6 +32,7 @@ export function createSelectionStore<T>(initialKey: T | null = null) {
 
       if (prev !== null) notify(prev);
       notify(next);
+      notifySelectedKey();
     },
 
     subscribeIsSelectedKey(key: T, listener: () => void) {
