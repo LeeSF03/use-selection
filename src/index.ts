@@ -1,4 +1,3 @@
-export { MyButton } from "./MyButton";
 export { createSelectionStore } from "./selection-store";
 export type { SelectionStore } from "./selection-store";
 export { IsSelectedKey } from "./is-selected-key";
