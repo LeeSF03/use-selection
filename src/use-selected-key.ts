@@ -1,15 +1,15 @@
 import { useSyncExternalStore, useCallback } from "react";
 import type { SelectionStore } from "./selection-store";
 
-export function useSelectionStore<T>(store: SelectionStore<T>, key: T) {
+export function useSelectedKey<T>(store: SelectionStore<T>) {
   const subscribe = useCallback(
-    (listener: () => void) => store.subscribe(key, listener),
-    [store, key],
+    (listener: () => void) => store.subscribeSelectedKey(listener),
+    [store],
   );
 
   const getSnapshot = useCallback(
-    () => store.getIsSelectedSnapshot(key),
-    [store, key],
+    () => store.getSelectedKeySnapshot(),
+    [store],
   );
 
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);

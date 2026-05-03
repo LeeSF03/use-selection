@@ -1,5 +1,5 @@
-export function createSelectionStore<T>(initial: T | null = null) {
-  let selected: T | null = initial;
+export function createSelectionStore<T>(initialKey: T | null = null) {
+  let selectedKey: T | null = initialKey;
   const listeners = new Map<T, Set<() => void>>();
 
   function notify(key: T) {
@@ -7,21 +7,40 @@ export function createSelectionStore<T>(initial: T | null = null) {
   }
 
   return {
-    getSelected() {
-      return selected;
+    subscribeSelectedKey(listener: () => void) {
+      if (selectedKey === null) return () => {};
+      let set = listeners.get(selectedKey);
+
+      if (!set) {
+        set = new Set();
+        listeners.set(selectedKey, set);
+      }
+
+      set.add(listener);
+
+      return () => {
+        set.delete(listener);
+
+        if (set.size === 0) {
+          if (selectedKey) listeners.delete(selectedKey);
+        }
+      };
+    },
+    getSelectedKeySnapshot() {
+      return selectedKey;
     },
 
-    setSelected(next: T) {
-      if (Object.is(selected, next)) return;
+    setSelectedKey(next: T) {
+      if (Object.is(selectedKey, next)) return;
 
-      const prev = selected;
-      selected = next;
+      const prev = selectedKey;
+      selectedKey = next;
 
-      if (prev) notify(prev);
+      if (prev !== null) notify(prev);
       notify(next);
     },
 
-    subscribe(key: T, listener: () => void) {
+    subscribeIsSelectedKey(key: T, listener: () => void) {
       let set = listeners.get(key);
 
       if (!set) {
@@ -40,8 +59,8 @@ export function createSelectionStore<T>(initial: T | null = null) {
       };
     },
 
-    getIsSelectedSnapshot(key: T) {
-      return Object.is(selected, key);
+    getIsSelectedKeySnapshot(key: T) {
+      return Object.is(selectedKey, key);
     },
   };
 }
