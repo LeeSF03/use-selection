@@ -2,13 +2,13 @@
   "name": "use-selection",
   "type": "module",
   "version": "0.0.0",
-  "description": "A starter for creating a React component library.",
-  "author": "Author Name <author.name@mail.com>",
+  "description": "createSelector from SolidJS but in React",
+  "author": "Lee Shuen Fei <shuenfeilee@gmail.com>",
   "license": "MIT",
-  "homepage": "https://github.com/author/library#readme",
+  "homepage": "https://github.com/LeeSF03/use-selection#use-selection",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/author/library.git"
+    "url": "git+https://github.com/LeeSF03/use-selection.git"
   },
   "bugs": {
     "url": "https://github.com/author/library/issues"
