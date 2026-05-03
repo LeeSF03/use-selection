@@ -11,7 +11,7 @@
     "url": "git+https://github.com/LeeSF03/use-selection.git"
   },
   "bugs": {
-    "url": "https://github.com/author/library/issues"
+    "url": "https://github.com/LeeSF03/use-selection/issues"
   },
   "exports": {
     ".": "./dist/index.js",
