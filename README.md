@@ -10,7 +10,7 @@ from the parent list.
 
 ## Demo
 
-https://github.com/LeeSF03/use-selection/blob/main/assets/showcase.mp4
+https://github.com/user-attachments/assets/fdc41cc3-63ce-4a5b-a9f4-80b304d3bf63
 
 ## Installation
 
