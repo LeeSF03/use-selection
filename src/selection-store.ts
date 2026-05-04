@@ -1,10 +1,10 @@
 export function createSelectionStore<T>(initialKey: T | null = null) {
   let selectedKey: T | null = initialKey;
-  const listeners = new Map<T, Set<() => void>>();
+  const isSelectedKeyListeners = new Map<T, Set<() => void>>();
   const selectedKeyListeners = new Set<() => void>();
 
   function notify(key: T) {
-    listeners.get(key)?.forEach((listener) => listener());
+    isSelectedKeyListeners.get(key)?.forEach((listener) => listener());
   }
 
   function notifySelectedKey() {
@@ -36,11 +36,11 @@ export function createSelectionStore<T>(initialKey: T | null = null) {
     },
 
     subscribeIsSelectedKey(key: T, listener: () => void) {
-      let set = listeners.get(key);
+      let set = isSelectedKeyListeners.get(key);
 
       if (!set) {
         set = new Set();
-        listeners.set(key, set);
+        isSelectedKeyListeners.set(key, set);
       }
 
       set.add(listener);
@@ -49,7 +49,7 @@ export function createSelectionStore<T>(initialKey: T | null = null) {
         set!.delete(listener);
 
         if (set!.size === 0) {
-          listeners.delete(key);
+          isSelectedKeyListeners.delete(key);
         }
       };
     },
