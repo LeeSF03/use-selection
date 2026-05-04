@@ -8,6 +8,10 @@ The API is similar in spirit to Solid's `createSelector`: each row subscribes to
 whether its own key is selected instead of receiving the selected key as a prop
 from the parent list.
 
+## Demo
+
+https://github.com/LeeSF03/use-selection/blob/main/assets/showcase.mp4
+
 ## Installation
 
 ```bash

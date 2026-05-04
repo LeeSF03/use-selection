@@ -15,7 +15,7 @@ const REACT_STATE_ITEMS = createItems("state");
 const KEYED_STORE_ITEMS = createItems("store");
 
 function createItems(prefix: string): Item[] {
-  return Array.from({ length: 40 }, (_, index) => ({
+  return Array.from({ length: 2000 }, (_, index) => ({
     id: `${prefix}-item-${index + 1}`,
     label: `Item ${index + 1}`,
   }));
