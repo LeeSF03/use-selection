@@ -1,5 +1,10 @@
 import { memo, useMemo, useRef, useState } from "react";
-import { createSelectionStore, IsSelectedKey, SelectedKey } from "../../src";
+import {
+  IsSelectedKey,
+  SelectedKey,
+  SelectionProvider,
+  useSelectionStore,
+} from "../../src";
 
 interface Item {
   id: string;
@@ -48,24 +53,12 @@ const ReactStateRow = memo(function ReactStateRow({
 
 interface StoreRowProps {
   item: Item;
-  onSelect: (id: string) => void;
-  store: ReturnType<typeof createSelectionStore<string>>;
 }
 
-const StoreRow = memo(function StoreRow({
-  item,
-  onSelect,
-  store,
-}: StoreRowProps) {
+const StoreRow = memo(function StoreRow({ item }: StoreRowProps) {
   return (
-    <IsSelectedKey keyValue={item.id} store={store}>
-      {(isSelected) => (
-        <StoreRowButton
-          isSelected={isSelected}
-          item={item}
-          onSelect={onSelect}
-        />
-      )}
+    <IsSelectedKey keyValue={item.id}>
+      {(isSelected) => <StoreRowButton isSelected={isSelected} item={item} />}
     </IsSelectedKey>
   );
 });
@@ -73,19 +66,18 @@ const StoreRow = memo(function StoreRow({
 function StoreRowButton({
   isSelected,
   item,
-  onSelect,
 }: {
   isSelected: boolean;
   item: Item;
-  onSelect: (id: string) => void;
 }) {
   const renders = useRenderCount();
+  const store = useSelectionStore();
 
   return (
     <button
       className="list-row"
       data-selected={isSelected}
-      onClick={() => onSelect(item.id)}
+      onClick={() => store.setSelectedKey(item.id)}
       type="button"
     >
       <span>
@@ -141,30 +133,22 @@ function ReactStateList() {
 }
 
 function SelectionStoreList() {
-  const store = useMemo(
-    () => createSelectionStore(KEYED_STORE_ITEMS[0]!.id),
-    [],
-  );
-
   return (
-    <ListPanel
-      description="Rows subscribe by key, so only the old selected row and next selected row are notified."
-      selectedId={
-        <SelectedKey store={store}>
-          {(selectedKey) => selectedKey ?? "None"}
-        </SelectedKey>
-      }
-      title="useIsSelectedKey and useSelectedKey"
-    >
-      {KEYED_STORE_ITEMS.map((item) => (
-        <StoreRow
-          item={item}
-          key={item.id}
-          onSelect={store.setSelectedKey}
-          store={store}
-        />
-      ))}
-    </ListPanel>
+    <SelectionProvider initialKey={KEYED_STORE_ITEMS[0]!.id}>
+      <ListPanel
+        description="Rows subscribe by key, so only the old selected row and next selected row are notified."
+        selectedId={
+          <SelectedKey>
+            {(selectedKey) => (selectedKey as string | null) ?? "None"}
+          </SelectedKey>
+        }
+        title="SelectionProvider with keyed subscriptions"
+      >
+        {KEYED_STORE_ITEMS.map((item) => (
+          <StoreRow item={item} key={item.id} />
+        ))}
+      </ListPanel>
+    </SelectionProvider>
   );
 }
 

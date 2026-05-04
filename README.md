@@ -28,11 +28,79 @@ bun add @leesf/use-selection
 
 React is a peer dependency.
 
-## Component (Recommended)
+## Components (Recommended)
 
-Create one selection store for a list and use the wrapper components to subscribe
-only where selected state is needed. This keeps the parent list from rerendering
-when selection changes.
+Use `SelectionProvider` with `SelectedKey` and `IsSelectedKey` when you do not
+want to pass the store through every row. This is the recommended path for list
+UIs because selected state stays local to the components that actually need it.
+
+```tsx
+import {
+  IsSelectedKey,
+  SelectionProvider,
+  SelectedKey,
+  useSelectionStore,
+} from "@leesf/use-selection";
+
+const items = [
+  { id: "one", label: "One" },
+  { id: "two", label: "Two" },
+  { id: "three", label: "Three" },
+];
+
+export function List() {
+  return (
+    <SelectionProvider initialKey={items[0]!.id}>
+      <SelectedKey>
+        {(selectedKey) => (
+          <p>Selected: {(selectedKey as string | null) ?? "None"}</p>
+        )}
+      </SelectedKey>
+
+      {items.map((item) => (
+        <Row item={item} key={item.id} />
+      ))}
+    </SelectionProvider>
+  );
+}
+
+function Row({ item }: { item: { id: string; label: string } }) {
+  const store = useSelectionStore();
+
+  return (
+    <IsSelectedKey keyValue={item.id}>
+      {(isSelected) => (
+        <button
+          aria-pressed={isSelected}
+          onClick={() => store.setSelectedKey(item.id)}
+          type="button"
+        >
+          {item.label}
+        </button>
+      )}
+    </IsSelectedKey>
+  );
+}
+```
+
+You can also provide a store directly when you want to own it outside the
+provider:
+
+```tsx
+const store = createSelectionStore("one");
+
+<SelectionProvider store={store}>
+  <SelectedKey>{(selectedKey) => selectedKey}</SelectedKey>
+</SelectionProvider>;
+```
+
+Use `keyValue` with `IsSelectedKey` because `key` is a special React prop and is
+not passed through to components.
+
+## Without Provider
+
+You can pass a store directly to the wrapper components. This avoids context and
+keeps TypeScript inference from the store.
 
 ```tsx
 import {
@@ -45,10 +113,9 @@ import { useMemo } from "react";
 const items = [
   { id: "one", label: "One" },
   { id: "two", label: "Two" },
-  { id: "three", label: "Three" },
 ];
 
-export function List() {
+function ListWithoutProvider() {
   const store = useMemo(() => createSelectionStore(items[0]!.id), []);
 
   return (
@@ -58,44 +125,25 @@ export function List() {
       </SelectedKey>
 
       {items.map((item) => (
-        <Row
-          handleSelect={store.setSelectedKey}
-          item={item}
-          key={item.id}
-          store={store}
-        />
+        <IsSelectedKey key={item.id} keyValue={item.id} store={store}>
+          {(isSelected) => (
+            <button
+              aria-pressed={isSelected}
+              onClick={() => store.setSelectedKey(item.id)}
+              type="button"
+            >
+              {item.label}
+            </button>
+          )}
+        </IsSelectedKey>
       ))}
     </div>
   );
 }
-
-function Row({
-  handleSelect,
-  item,
-  store,
-}: {
-  handleSelect: (id: string) => void;
-  item: { id: string; label: string };
-  store: ReturnType<typeof createSelectionStore<string>>;
-}) {
-  return (
-    <IsSelectedKey keyValue={item.id} store={store}>
-      {(isSelected) => (
-        <button
-          aria-pressed={isSelected}
-          onClick={() => handleSelect(item.id)}
-          type="button"
-        >
-          {item.label}
-        </button>
-      )}
-    </IsSelectedKey>
-  );
-}
 ```
 
-Use `keyValue` with `IsSelectedKey` because `key` is a special React prop and is
-not passed through to components.
+In this example, `selectedKey` is inferred as `string | null` because `store` is
+`SelectionStore<string>`.
 
 ## Hooks
 
@@ -165,6 +213,35 @@ The store exposes:
 - `getIsSelectedKeySnapshot(key)` - returns whether `key` is selected.
 - `subscribeIsSelectedKey(key, listener)` - subscribes to changes for one key.
 
+### `SelectionProvider`
+
+Provides a selection store to `SelectedKey`, `IsSelectedKey`, and
+`useSelectionStore`.
+
+Create an internal store:
+
+```tsx
+<SelectionProvider initialKey="item-1">{children}</SelectionProvider>
+```
+
+Provide an existing store:
+
+```tsx
+const store = createSelectionStore("item-1");
+
+<SelectionProvider store={store}>{children}</SelectionProvider>;
+```
+
+`initialKey` is only used when the provider creates its internal store.
+
+### `useSelectionStore()`
+
+Reads the nearest `SelectionProvider`.
+
+```tsx
+const store = useSelectionStore();
+```
+
 ### `useSelectedKey(store)`
 
 Subscribes to the selected key value.
@@ -221,6 +298,13 @@ subscriptions:
 
 ```bash
 pnpm run play
+```
+
+Build and preview the production playground:
+
+```bash
+pnpm run play:build
+pnpm run play:preview
 ```
 
 The playground shows per-row render counts so you can see the difference when
