@@ -1,4 +1,4 @@
-import { memo, useMemo, useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 import {
   IsSelectedKey,
   SelectedKey,
@@ -53,23 +53,10 @@ const ReactStateRow = memo(function ReactStateRow({
 
 interface StoreRowProps {
   item: Item;
+  isSelected: boolean;
 }
 
-const StoreRow = memo(function StoreRow({ item }: StoreRowProps) {
-  return (
-    <IsSelectedKey keyValue={item.id}>
-      {(isSelected) => <StoreRowButton isSelected={isSelected} item={item} />}
-    </IsSelectedKey>
-  );
-});
-
-function StoreRowButton({
-  isSelected,
-  item,
-}: {
-  isSelected: boolean;
-  item: Item;
-}) {
+const StoreRow = memo(function StoreRow({ isSelected, item }: StoreRowProps) {
   const renders = useRenderCount();
   const store = useSelectionStore();
 
@@ -87,7 +74,7 @@ function StoreRowButton({
       <span className="render-count">{renders}</span>
     </button>
   );
-}
+});
 
 export function App() {
   return (
@@ -145,7 +132,9 @@ function SelectionStoreList() {
         title="SelectionProvider with keyed subscriptions"
       >
         {KEYED_STORE_ITEMS.map((item) => (
-          <StoreRow item={item} key={item.id} />
+          <IsSelectedKey key={item.id} keyValue={item.id}>
+            {(isSelected) => <StoreRow isSelected={isSelected} item={item} />}
+          </IsSelectedKey>
         ))}
       </ListPanel>
     </SelectionProvider>

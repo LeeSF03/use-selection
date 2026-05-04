@@ -58,27 +58,31 @@ export function List() {
       </SelectedKey>
 
       {items.map((item) => (
-        <Row item={item} key={item.id} />
+        <IsSelectedKey key={item.id} keyValue={item.id}>
+          {(isSelected) => <Row isSelected={isSelected} item={item} />}
+        </IsSelectedKey>
       ))}
     </SelectionProvider>
   );
 }
 
-function Row({ item }: { item: { id: string; label: string } }) {
+function Row({
+  isSelected,
+  item,
+}: {
+  isSelected: boolean;
+  item: { id: string; label: string };
+}) {
   const store = useSelectionStore();
 
   return (
-    <IsSelectedKey keyValue={item.id}>
-      {(isSelected) => (
-        <button
-          aria-pressed={isSelected}
-          onClick={() => store.setSelectedKey(item.id)}
-          type="button"
-        >
-          {item.label}
-        </button>
-      )}
-    </IsSelectedKey>
+    <button
+      aria-pressed={isSelected}
+      onClick={() => store.setSelectedKey(item.id)}
+      type="button"
+    >
+      {item.label}
+    </button>
   );
 }
 ```
@@ -127,17 +131,35 @@ function ListWithoutProvider() {
       {items.map((item) => (
         <IsSelectedKey key={item.id} keyValue={item.id} store={store}>
           {(isSelected) => (
-            <button
-              aria-pressed={isSelected}
-              onClick={() => store.setSelectedKey(item.id)}
-              type="button"
-            >
-              {item.label}
-            </button>
+            <RowWithoutProvider
+              handleSelect={store.setSelectedKey}
+              isSelected={isSelected}
+              item={item}
+            />
           )}
         </IsSelectedKey>
       ))}
     </div>
+  );
+}
+
+function RowWithoutProvider({
+  handleSelect,
+  isSelected,
+  item,
+}: {
+  handleSelect: (id: string) => void;
+  isSelected: boolean;
+  item: { id: string; label: string };
+}) {
+  return (
+    <button
+      aria-pressed={isSelected}
+      onClick={() => handleSelect(item.id)}
+      type="button"
+    >
+      {item.label}
+    </button>
   );
 }
 ```
