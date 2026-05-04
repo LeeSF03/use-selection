@@ -1,4 +1,4 @@
-# use-selection
+# @leesf/use-selection
 
 React utilities for keyed selection state. It is useful for large selectable
 lists where changing the selected item should update only the previously
@@ -11,19 +11,19 @@ from the parent list.
 ## Installation
 
 ```bash
-npm install use-selection
+npm install @leesf/use-selection
 ```
 
 ```bash
-yarn add use-selection
+yarn add @leesf/use-selection
 ```
 
 ```bash
-pnpm add use-selection
+pnpm add @leesf/use-selection
 ```
 
 ```bash
-bun add use-selection
+bun add @leesf/use-selection
 ```
 
 React is a peer dependency.
@@ -39,7 +39,7 @@ import {
   createSelectionStore,
   IsSelectedKey,
   SelectedKey,
-} from "use-selection";
+} from "@leesf/use-selection";
 import { useMemo } from "react";
 
 const items = [
@@ -108,7 +108,7 @@ import {
   createSelectionStore,
   useIsSelectedKey,
   useSelectedKey,
-} from "use-selection";
+} from "@leesf/use-selection";
 import { useMemo } from "react";
 
 function HookList() {
@@ -207,7 +207,7 @@ If a parent list stores `selectedId` in React state and passes it to every row,
 each selection change rerenders the parent and gives every row a changed prop.
 That is often fine for small lists, but expensive for large or complex rows.
 
-With `use-selection`, rows subscribe by key. Updating the selected key
+With `@leesf/use-selection`, rows subscribe by key. Updating the selected key
 notifies only:
 
 - the previously selected key
