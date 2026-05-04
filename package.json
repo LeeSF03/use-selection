@@ -1,7 +1,7 @@
 {
   "name": "@leesf/use-selection",
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "createSelector from SolidJS but in React",
   "author": "Lee Shuen Fei <shuenfeilee@gmail.com>",
   "license": "MIT",
